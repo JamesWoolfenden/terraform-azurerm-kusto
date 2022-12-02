@@ -6,9 +6,9 @@ resource "azurerm_kusto_cluster_customer_managed_key" "pike" {
 }
 
 variable "key" {
-    type = object({
- key_vault_id = string
-  key_name     = string
-  key_version  = number
-    })
+  type = object({
+    key_vault_id = string
+    key_name     = string
+    key_version  = number
+  })
 }

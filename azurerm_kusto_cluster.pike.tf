@@ -8,21 +8,21 @@ resource "azurerm_kusto_cluster" "pike" {
     capacity = var.kusto.sku_capacity
   }
 
-  tags = var.tags
+  tags                      = var.tags
   double_encryption_enabled = true
 }
 
 
 variable "tags" {
-    type = map
+  type = map(any)
 }
 
 variable "kusto" {
-    type = object({
-        name=string
-        location=string
-        rg_name=string
-        sku=string
-        sku_capacity=number
-    })
+  type = object({
+    name         = string
+    location     = string
+    rg_name      = string
+    sku          = string
+    sku_capacity = number
+  })
 }
