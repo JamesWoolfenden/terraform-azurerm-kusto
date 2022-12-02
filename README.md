@@ -1,175 +1,27 @@
-# tf-scaffold
+# terraform-azurerm-kusto
 
+[![Build Status](https://github.com/JamesWoolfenden/terraform-azurerm-kusto/workflows/Verify%20and%20Bump/badge.svg?branch=master)](https://github.com/JamesWoolfenden/terraform-azurerm-kusto)
+[![Latest Release](https://img.shields.io/github/release/JamesWoolfenden/terraform-azurerm-kusto.svg)](https://github.com/JamesWoolfenden/terraform-azurerm-kusto/releases/latest)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![checkov](https://img.shields.io/badge/checkov-verified-brightgreen)](https://www.checkov.io/)
 
-This repository exists to help with new terraform projects, and with automation and training.
-The repository is designed to create the structure- scaffold that is alway needed for a new Terraform project.
-Included are the basic Github Actions.
-To clone scaffold repository but with no .git folder.
+Terraform module to provision a secure terraform state bucket for team use of IAC.
 
-## Powershell
+---
 
-```powershell
-git clone --depth=1 git@github.com:JamesWoolfenden/tf-scaffold.git scaffold
-rm scaffold\.git -recurse -force
-```
-
-Edit your profile and add:
-
-```powershell
-function scaffold {
-   param(
-         [parameter(mandatory=$true)]
-         [string]$name,
-         [string]$branch="master")
-   git clone --depth=1 --branch=$branch git@github.com:JamesWoolfenden/tf-scaffold.git "$name"
-   rm "$name\.git" -recurse -force
-}
-```
-
-or
-
-```powershell
-function scaffold {
-   param(
-         [parameter(mandatory=$true)]
-         [string]$name,
-         [string]$branch="master",
-         [switch]$repo=$false)
-
-   if (!(test-path .\$name))
-   {
-       git clone --depth=1 --branch=$branch git@github.com:JamesWoolfenden/tf-scaffold.git "$name"
-   }
-   else{
-      write-warning "Path $name already exists"
-      return
-   }
-
-   rm "$name\.git" -recurse -force
-   cd $name
-   echo "# %name" >README.md
-   if ($repo)
-   {
-      git init|git add -A
-      pre-commit install
-      git commit -m "Initial Draft"
-   }
-}
-```
-
-Then you can use:
-
-```powershell
-scaffold -name hello-world
-```
-
-or to start a new git repo as well:
-
-```powershell
-scaffold -name hello-world -repo
-```
-
-To make a new project anytime you like.
-
-## \*Nix
-
-```cli
-git clone --depth=1 git@github.com:JamesWoolfenden/tf-scaffold.git scaffold| rm !$/.git -rf
-```
-
-Or you add this to your ~/.bashrc
-
-```bash
-function scaffold() {
-if [ -z "$1" ]
-then
-   name="scaffold"
-else
-   name=$1
-fi
-
-if [ -z "$2" ]
-then
-   branch="master"
-else
-   branch=$2
-fi
-
-
-echo "git clone --depth=1 --branch $branch git@github.com:JamesWoolfenden/tf-scaffold.git $name"
-git clone --depth=1 --branch $branch git@github.com:JamesWoolfenden/tf-scaffold.git $name
-rm $name/.git -rf
-}
-```
+It's 100% Open Source and licensed under the [APACHE2](LICENSE).
 
 ## Usage
 
-Once it's in your profile, pretty straigh forward:
+Include this repository as a module in your existing terraform code:
 
-```cli
- $ scaffold terraform-aws-generic
-git clone --depth=1 git@github.com:JamesWoolfenden/tf-scaffold.git terraform-aws-generic
-Cloning into 'terraform-aws-generic'...
-remote: Enumerating objects: 14, done.
-remote: Counting objects: 100% (14/14), done.
-remote: Compressing objects: 100% (9/9), done.
-remote: Total 14 (delta 0), reused 10 (delta 0), pack-reused 0
-Receiving objects: 100% (14/14), done.
+```hcl
+module "kusto" {
+source      = "JamesWoolfenden/kusto/azurerm"
+version     = "v0.0.1"
+common_tags = var.common_tags
+}
 ```
-
-## So what's in it
-
-### .gitignore
-
-Has good defaults for working with Terraform
-
-### .pre-commit-config.yaml
-
-Has a standard set of pre-commit hooks for working with Terraform and AWS. You'll need to install the pre-commit framework <https://pre-commit.com/#install>.
-And after you've added all these file to your new repo, in the root of your new repository:
-
-```cli
-pre-commit install
-```
-
-### main.tf
-
-This is an expected file for Terraform modules. I don't use it.
-
-### Makefile
-
-This is just to make like easier for you. Problematic if you are cross platform as make isn't very good/awful at that.
-
-### outputs.tf
-
-A standard place to return values, either to the screen or to pass back from a module.
-
-### provider.aws.tf
-
-You are always going to be using these, I have added the most basic provider for AWS.
-
-### README.md
-
-Where all the information goes.
-
-### main.auto.tfvars
-
-This is the standard file for setting your variables in. The auto keyword ensures its picked up and used by Terraform.
-
-### variables.tf
-
-Contains a map variable **common_tags** which should be extended and used on
-every taggable object.
-
-### .dependsabot/config.yml
-
-Sets the repository to be automatically dependency scanned in github.
-
-## terraform-docs
-
-If you leave the section below in your **README.md** then the pre-commit will auto update your docs.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -178,7 +30,11 @@ No requirements.
 
 ## Providers
 
-No providers.
+| Name | Version |
+|------|---------|
+| <a name="provider_google"></a> [google](#provider\_google) | n/a |
+| <a name="provider_local"></a> [local](#provider\_local) | n/a |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | n/a |
 
 ## Modules
 
@@ -186,13 +42,109 @@ No modules.
 
 ## Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [google_compute_instance.vm_instance](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance) | resource |
+| [google_compute_project_metadata_item.username](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_project_metadata_item) | resource |
+| [local_file.private](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
+| [local_file.public](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
+| [tls_private_key.ssh](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) | resource |
 
 ## Inputs
 
-No inputs.
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Implements the common tags scheme | `list(any)` | n/a | yes |
+| <a name="input_image"></a> [image](#input\_image) | n/a | `string` | `"debian-cloud/debian-9"` | no |
+| <a name="input_machine_type"></a> [machine\_type](#input\_machine\_type) | n/a | `string` | `"f1-micro"` | no |
+| <a name="input_project_id"></a> [project\_id](#input\_project\_id) | GCP project ID | `string` | n/a | yes |
+| <a name="input_region"></a> [region](#input\_region) | GCP region | `string` | n/a | yes |
+| <a name="input_username"></a> [username](#input\_username) | I think you'll figure this one out | `string` | n/a | yes |
+| <a name="input_zone"></a> [zone](#input\_zone) | GCP zone | `string` | `"us-central1-a"` | no |
 
 ## Outputs
 
 No outputs.
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
+## Role and Permissions
+
+<!-- BEGINNING OF PRE-COMMIT-PIKE DOCS HOOK -->
+The Terraform resource required is:
+
+```golang
+resource "google_project_iam_custom_role" "terraformXVlBzgba" {
+  project     = "examplea"
+  role_id     = "terraform_pike"
+  title       = "terraformXVlBzgba"
+  description = "A user with least privileges"
+  permissions = [
+    "compute.disks.create",
+    "compute.globalOperations.get",
+    "compute.instances.create",
+    "compute.instances.delete",
+    "compute.instances.get",
+    "compute.instances.setMetadata",
+    "compute.instances.setTags",
+    "compute.projects.get",
+    "compute.projects.setCommonInstanceMetadata",
+    "compute.subnetworks.use",
+    "compute.subnetworks.useExternalIp",
+    "compute.zones.get",
+    "iam.serviceAccounts.actAs"
+  ]
+}
+
+```
+<!-- END OF PRE-COMMIT-PIKE DOCS HOOK -->
+## Related Projects
+
+Check out these related projects.
+
+- [terraform-aws-s3](https://github.com/jameswoolfenden/terraform-aws-s3) - S3 buckets
+
+## Help
+
+**Got a question?**
+
+File a GitHub [issue](https://github.com/JamesWoolfenden/terraform-azurerm-kusto/issues).
+
+## Contributing
+
+### Bug Reports & Feature Requests
+
+Please use the [issue tracker](https://github.com/JamesWoolfenden/terraform-azurerm-kusto/issues) to report any bugs or file feature requests.
+
+## Copyrights
+
+Copyright © 2022 James Woolfenden
+
+## License
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+See [LICENSE](LICENSE) for full details.
+
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements. See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership. The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+
+<https://www.apache.org/licenses/LICENSE-2.0>
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied. See the License for the
+specific language governing permissions and limitations
+under the License.
+
+### Contributors
+
+[![James Woolfenden][jameswoolfenden_avatar]][jameswoolfenden_homepage]<br/>[James Woolfenden][jameswoolfenden_homepage] |
+
+[jameswoolfenden_homepage]: https://github.com/jameswoolfenden
+[jameswoolfenden_avatar]: https://github.com/jameswoolfenden.png?size=150
