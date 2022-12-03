@@ -1,5 +1,5 @@
 resource "azurerm_kusto_cluster" "pike" {
-	# checkov:skip=CKV_AZURE_74: faulty
+  # checkov:skip=CKV_AZURE_74: faulty
   name                = var.kusto.name
   location            = var.kusto.location
   resource_group_name = var.kusto.rg_name
@@ -11,7 +11,7 @@ resource "azurerm_kusto_cluster" "pike" {
 
   tags                      = var.tags
   double_encryption_enabled = true
-  disk_encryption_enabled = true
+  disk_encryption_enabled   = true
 }
 
 
